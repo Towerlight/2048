@@ -274,7 +274,7 @@ GameManager.prototype.gameTimeExceeded = function (gameStep) {
 	}
 
 	var selff = this;
-	if (maxTile >= (4 << (gameStep + 1))) {
+	if (maxTile >= (2 << (gameStep + 1))) {
 		setTimeout(function(){selff.gameTimeExceeded(gameStep + 1)}, this.getTimeVector(gameStep + 1) * 1000); 			
 	}
 	else {
