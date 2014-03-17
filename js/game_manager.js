@@ -47,6 +47,13 @@ GameManager.prototype.setup = function () {
 
   // Update the actuator
   this.actuate();
+
+  var selff = this;
+
+  setTimeout(function(){selff.gameTimeExceeded(0)}, 2000);
+
+  timedCount ();
+  //selff.gameTimeExceeded(0);
 };
 
 // Set up the initial tiles to start the game with
@@ -175,7 +182,11 @@ GameManager.prototype.getVector = function (direction) {
 
   return map[direction];
 };
+GameManager.prototype.getTimeVector = function (timeStep) {
+	var timeLimit=new Array(0, 3, 5, 5, 5, 20, 20, 30, 90, 420);
 
+	return timeLimit[timeStep];
+}
 // Build a list of positions to traverse in the right order
 GameManager.prototype.buildTraversals = function (vector) {
   var traversals = { x: [], y: [] };
@@ -243,3 +254,39 @@ GameManager.prototype.tileMatchesAvailable = function () {
 GameManager.prototype.positionsEqual = function (first, second) {
   return first.x === second.x && first.y === second.y;
 };
+
+GameManager.prototype.gameTimeExceeded = function (gameStep) {
+
+	if ( gameStep > 9 || this.isGameTerminated () ) return false;
+
+	var maxTile = 0;
+	
+	for (var x = 0; x < this.size; x++) {
+		for (var y = 0; y < this.size; y++) {
+		  	tile = this.grid.cellContent({ x: x, y: y });
+
+			if (tile) {
+				if (tile.value > maxTile) {
+					maxTile = tile.value;
+				}
+			}
+		}
+	}
+
+	var selff = this;
+	if (maxTile >= (4 << (gameStep + 1))) {
+		setTimeout(function(){selff.gameTimeExceeded(gameStep + 1)}, this.getTimeVector(gameStep + 1) * 1000); 			
+	}
+	else {
+		this.actuator.message(false);
+	}
+};
+
+var ca=0
+var ta
+function timedCount()
+{
+	document.getElementById('txt').value=ca
+	ca=ca+1
+	ta=setTimeout("timedCount()", 1000)
+}
