@@ -12,9 +12,17 @@ function GameManager(size, InputManager, Actuator, ScoreManager) {
 
   this.setup();
 }
-
+var ca=0
+var ta
+function timedCount()
+{
+	document.getElementById('txt').value=ca
+	ca=ca+1
+	ta=setTimeout("timedCount()", 1000)
+}
 // Restart the game
 GameManager.prototype.restart = function () {
+  clearTimeout(ta)
   this.actuator.continue();
   this.setup();
 };
@@ -52,6 +60,7 @@ GameManager.prototype.setup = function () {
 
   setTimeout(function(){selff.gameTimeExceeded(0)}, 2000);
 
+  ca = 0;
   timedCount ();
   //selff.gameTimeExceeded(0);
 };
@@ -278,15 +287,8 @@ GameManager.prototype.gameTimeExceeded = function (gameStep) {
 		setTimeout(function(){selff.gameTimeExceeded(gameStep + 1)}, this.getTimeVector(gameStep + 1) * 1000); 			
 	}
 	else {
+		this.over = true;
 		this.actuator.message(false);
 	}
 };
 
-var ca=0
-var ta
-function timedCount()
-{
-	document.getElementById('txt').value=ca
-	ca=ca+1
-	ta=setTimeout("timedCount()", 1000)
-}
